@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { useQuery } from "@apollo/react-hooks";
+import gql from "graphql-tag";
+import "./App.css";
 
+const postQuery = gql`
+  query {
+    post @rest(type: "Posts", path: "posts/1") {
+      title
+    }
+  }
+`;
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const { loading, error, data } = useQuery(postQuery);
+  if (loading) return "Loading...";
+  if (error) return `Error Message ${error.message}`;
+  if (data) {
+    return (
+      <div className="App">
+        <h1>Post Detail</h1>
+        <p>{data.post.title}</p>
+      </div>
+    );
+  }
 }
 
 export default App;
